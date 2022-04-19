@@ -1,10 +1,7 @@
 import React from 'react'
+import Layout from '../components/layout'
 
 const Index = () => {
-  return (
-    <div className='test'>
-      <h1 className=''>DevShop</h1>
-    </div>
-  )
+  return <Layout />
 }
 export default Index
