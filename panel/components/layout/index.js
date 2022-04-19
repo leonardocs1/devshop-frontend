@@ -26,9 +26,9 @@ const Layout = () => {
         <div
           className={
             'fixed z-30 inset-y-0 left-0 w-64 transition duration-300 transform bg-gray-900 overflow-y-auto lg:translate-x-0 lg:static lg:inset-0 ' +
-            sidebarOpen
+            (sidebarOpen
               ? 'translate-x-0 ease-out'
-              : '-translate-x-full ease-in'
+              : '-translate-x-full ease-in')
           }
         >
           <div className='flex items-center justify-center mt-8'>
@@ -54,7 +54,7 @@ const Layout = () => {
               </svg>
 
               <span className='text-white text-2xl mx-2 font-semibold'>
-                Dashboard
+                DevShop
               </span>
             </div>
           </div>
@@ -331,41 +331,37 @@ const Layout = () => {
                 <div
                   onClick={() => setDropdownOpen(false)}
                   className={
-                    dropdownOpen
+                    'fixed inset-0 h-full w-full z-10 ' + dropdownOpen
                       ? 'block '
-                      : ' ' + 'fixed inset-0 h-full w-full z-10'
+                      : ' '
                   }
-                  style={{ display: 'none' }}
                 ></div>
-
-                <div
-                  className={
-                    dropdownOpen
-                      ? 'block '
-                      : ' ' +
-                        'absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10'
-                  }
-                  style={{ display: 'none' }}
-                >
-                  <a
-                    href='#'
-                    className='block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white'
+                {dropdownOpen && (
+                  <div
+                    className={
+                      'absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10 '
+                    }
                   >
-                    Profile
-                  </a>
-                  <a
-                    href='#'
-                    className='block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white'
-                  >
-                    Products
-                  </a>
-                  <a
-                    href='/login'
-                    className='block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white'
-                  >
-                    Logout
-                  </a>
-                </div>
+                    <a
+                      href='#'
+                      className='block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white'
+                    >
+                      Profile
+                    </a>
+                    <a
+                      href='#'
+                      className='block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white'
+                    >
+                      Products
+                    </a>
+                    <a
+                      href='/login'
+                      className='block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white'
+                    >
+                      Logout
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           </header>
