@@ -6,7 +6,7 @@ import Title from '../components/Title'
 const Index = () => {
   return (
     <Layout>
-      <Title>DevShop - Painel de Controle</Title>
+      <Title>Gerenciar categorias</Title>
       <div className='mt-4'>
         <div className='flex flex-wrap -mx-6'>
           <Card>
