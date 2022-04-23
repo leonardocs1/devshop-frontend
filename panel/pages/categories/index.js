@@ -1,9 +1,8 @@
 import React from 'react'
-import Card from '../components/Card'
-import Layout from '../components/Layout'
-import Table from '../components/Table'
-import Title from '../components/Title'
-import { useQuery } from '../lib/graphql'
+import Layout from '../../components/Layout'
+import Table from '../../components/Table'
+import Title from '../../components/Title'
+import { useQuery } from '../../lib/graphql'
 
 const query = {
   query: `
@@ -22,7 +21,7 @@ const Index = () => {
       <Title>Gerenciar categorias</Title>
       <div className='mt-8'></div>
       <div>
-        <a href=''>Criar categoria</a>
+        <a href='/categories/create'>Criar categoria</a>
       </div>
       <div className='flex flex-col mt-8'>
         <div className='-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8'>
