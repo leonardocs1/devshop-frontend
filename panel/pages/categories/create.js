@@ -1,28 +1,37 @@
 import React from 'react'
 import Layout from '../../components/Layout'
 import Title from '../../components/Title'
-import { useQuery } from '../../lib/graphql'
+import { useMutation } from '../../lib/graphql'
 import { useFormik } from 'formik'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
 
-const query = {
+const mutation = {
   query: `
-    query {
-      getAllCategories {
-        id, name, slug
+    mutation createCategory($name: String!, $slug: String!) {
+      createCategory (input: {
+        name: $name,
+        slug: $slug
+      }) {
+        id
+        name
+        slug
       }
     }
   `
 }
 
 const Index = () => {
-  const { data, error } = useQuery(query)
+  const router = useRouter()
+  const [data, createCategory] = useMutation(mutation)
   const form = useFormik({
     initialValues: {
       name: '',
       slug: ''
     },
-    onSubmit: values => {
-      console.log(values)
+    onSubmit: async values => {
+      await createCategory(values)
+      router.push('/categories')
     }
   })
   return (
@@ -30,7 +39,9 @@ const Index = () => {
       <Title>Criar nova categoria</Title>
       <div className='mt-8'></div>
       <div>
-        <a href=''>Criar categoria</a>
+        <Link href='/categories/create'>
+          <a>Criar categoria</a>
+        </Link>
       </div>
       <div className='flex flex-col mt-8'>
         <div className='-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8'>
