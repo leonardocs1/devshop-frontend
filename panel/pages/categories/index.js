@@ -4,18 +4,16 @@ import Table from '../../components/Table'
 import Title from '../../components/Title'
 import { useQuery } from '../../lib/graphql'
 
-const query = {
-  query: `
+const GET_ALL_CATEGORIES = `
     query {
       getAllCategories {
         id, name, slug
       }
     }
   `
-}
 
 const Index = () => {
-  const { data, error } = useQuery(query)
+  const { data, error } = useQuery(GET_ALL_CATEGORIES)
   return (
     <Layout>
       <Title>Gerenciar categorias</Title>

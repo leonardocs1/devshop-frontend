@@ -6,8 +6,7 @@ import { useFormik } from 'formik'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-const mutation = {
-  query: `
+const mutation = `
     mutation createCategory($name: String!, $slug: String!) {
       createCategory (input: {
         name: $name,
@@ -19,7 +18,6 @@ const mutation = {
       }
     }
   `
-}
 
 const Index = () => {
   const router = useRouter()
