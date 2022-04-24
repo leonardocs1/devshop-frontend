@@ -3,6 +3,7 @@ import Layout from '../../components/Layout'
 import Table from '../../components/Table'
 import Title from '../../components/Title'
 import { useMutation, useQuery } from '../../lib/graphql'
+import Link from 'next/link'
 
 const DELETE_CATEGORY = `
 mutation deleteCategory($id: String!) {
@@ -70,12 +71,14 @@ const Index = () => {
                           </Table.Td>
 
                           <Table.Td>
-                            <a
-                              href='#'
-                              className='text-indigo-600 hover:text-indigo-900'
-                            >
-                              Edit
-                            </a>{' '}
+                            <Link href={`/categories/${item.id}/edit`}>
+                              <a
+                                href='#'
+                                className='text-indigo-600 hover:text-indigo-900'
+                              >
+                                Edit
+                              </a>
+                            </Link>{' '}
                             |
                             <a
                               href='#'
