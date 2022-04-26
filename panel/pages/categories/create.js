@@ -4,7 +4,6 @@ import Title from '../../components/Title'
 import { useMutation } from '../../lib/graphql'
 import { useFormik } from 'formik'
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 import Button from '../../components/Button'
 import Input from '../../components/Input'
 

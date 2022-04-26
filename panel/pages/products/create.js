@@ -101,7 +101,7 @@ const Index = () => {
                 ></Input>
                 <Select
                   label='Selecione a categoria'
-                  name='categoria'
+                  name='category'
                   onChange={form.handleChange}
                   value={form.values.category}
                   options={options}
