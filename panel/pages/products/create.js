@@ -1,13 +1,13 @@
 import React from 'react'
 import Layout from '../../components/Layout'
 import Title from '../../components/Title'
-import { useMutation, useQuery } from '../../lib/graphql'
+import { useMutation, useQuery, fetcher } from '../../lib/graphql'
 import { useFormik } from 'formik'
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 import Button from '../../components/Button'
 import Input from '../../components/Input'
 import Select from '../../components/Select'
+import * as Yup from 'yup'
 
 const CREATE_PRODUCT = `
     mutation createProduct($name: String!, $slug: String!, $description: String!, $category: String!) {
@@ -32,13 +32,42 @@ const GET_ALL_CATEGORIES = `
     }
   `
 
-const GET_ALL_PRODUCTS = `
-    query {
-      getAllProducts {
-        id, name, slug, description
+const ProductSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(3, 'Por favor, informe um nome com pelo menos 3 caracteres.')
+    .required('Por favor, informe um nome.'),
+  slug: Yup.string()
+    .min(3, 'Por favor, informe um slug com pelo menos 3 caracteres.')
+    .required('Por favor, informe um slug.')
+    .test(
+      'is-unique',
+      'Por favor, utilize outro slug. Este já está em uso.',
+      async value => {
+        const ret = await fetcher(
+          JSON.stringify({
+            query: `
+              query {
+                getProductBySlug(slug: "${value}"){
+                  id
+                }
+              }
+            
+            `
+          })
+        )
+        if (ret.errors) {
+          return true
+        }
+        return false
       }
-    }
-  `
+    ),
+  description: Yup.string()
+    .min(20, 'Por favor, informe uma descrição com pelo menos 20 caracteres.')
+    .required('Por favor, informe uma descrição.'),
+  category: Yup.string()
+    .required('Por favor, informe uma categoria.')
+    .min(1, 'Por favor, informe uma categoria.')
+})
 
 const Index = () => {
   const router = useRouter()
@@ -56,7 +85,8 @@ const Index = () => {
       if (data && !data.errors) {
         router.push('/products')
       }
-    }
+    },
+    validationSchema: ProductSchema
   })
   let options = []
   if (categories && categories.getAllCategories) {
@@ -90,6 +120,7 @@ const Index = () => {
                   value={form.values.name}
                   onChange={form.handleChange}
                   name='name'
+                  errorMessage={form.errors.name}
                 ></Input>
                 <Input
                   label='Slug do produto'
@@ -98,6 +129,7 @@ const Index = () => {
                   onChange={form.handleChange}
                   name='slug'
                   helpText='Slug é utilizado para URLs amigáveis'
+                  errorMessage={form.errors.slug}
                 ></Input>
                 <Input
                   label='Descrição do produto'
@@ -105,6 +137,7 @@ const Index = () => {
                   value={form.values.description}
                   onChange={form.handleChange}
                   name='description'
+                  errorMessage={form.errors.description}
                 ></Input>
                 <Select
                   label='Selecione a categoria'
@@ -112,6 +145,8 @@ const Index = () => {
                   onChange={form.handleChange}
                   value={form.values.category}
                   options={options}
+                  errorMessage={form.errors.category}
+                  initial={{ id: '', label: 'Selecione...' }}
                 />
               </div>
               <Button type={'submit'}>{'Criar produto'}</Button>
