@@ -7,7 +7,8 @@ const Input = ({
   value,
   onChange,
   name,
-  helpText = null
+  helpText = null,
+  errorMessage = ''
 }) => {
   return (
     <div className='w-full px-3'>
@@ -26,6 +27,9 @@ const Input = ({
         onChange={onChange}
         name={name}
       />
+      {errorMessage && (
+        <p className='text-red-500 text-xs italic'>{errorMessage}</p>
+      )}
       {helpText && (
         <p className='text-gray-600 text-xs italic mb-4'>{helpText}</p>
       )}

@@ -1,11 +1,12 @@
 import React from 'react'
 import Layout from '../../components/Layout'
 import Title from '../../components/Title'
-import { useMutation } from '../../lib/graphql'
+import { useMutation, fetcher } from '../../lib/graphql'
 import { useFormik } from 'formik'
 import { useRouter } from 'next/router'
 import Button from '../../components/Button'
 import Input from '../../components/Input'
+import * as Yup from 'yup'
 
 const CREATE_CATEGORY = `
     mutation createCategory($name: String!, $slug: String!) {
@@ -19,6 +20,36 @@ const CREATE_CATEGORY = `
       }
     }
   `
+const CategorySchema = Yup.object().shape({
+  name: Yup.string()
+    .min(3, 'Por favor, informe um nome com pelo menos 3 caracteres.')
+    .required('Por favor, informe um nome.'),
+  slug: Yup.string()
+    .min(3, 'Por favor, informe um slug com pelo menos 3 caracteres.')
+    .required('Por favor, informe um slug.')
+    .test(
+      'is-unique',
+      'Por favor, utilize outro slug. Este já está em uso.',
+      async value => {
+        const ret = await fetcher(
+          JSON.stringify({
+            query: `
+            query {
+              getCategoryBySlug(slug: "${value}"){
+                id
+              }
+            }
+          
+          `
+          })
+        )
+        if (ret.errors) {
+          return true
+        }
+        return false
+      }
+    )
+})
 
 const Index = () => {
   const router = useRouter()
@@ -28,6 +59,7 @@ const Index = () => {
       name: '',
       slug: ''
     },
+    validationSchema: CategorySchema,
     onSubmit: async values => {
       const data = await createCategory(values)
       if (data && !data.errors) {
@@ -58,7 +90,9 @@ const Index = () => {
                   value={form.values.name}
                   onChange={form.handleChange}
                   name='name'
+                  errorMessage={form.errors.name}
                 ></Input>
+
                 <Input
                   label='Slug da categoria'
                   placeholder='Preencha com o slug da categoria'
@@ -66,6 +100,7 @@ const Index = () => {
                   onChange={form.handleChange}
                   name='slug'
                   helpText='Slug é utilizado para URLs amigáveis'
+                  errorMessage={form.errors.slug}
                 ></Input>
               </div>
               <Button type={'submit'}>{'Criar categoria'}</Button>
