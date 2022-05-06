@@ -1,12 +1,15 @@
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { useMutation, useQuery } from '../../../lib/graphql'
+import { useMutation, useQuery, fetcher } from '../../../lib/graphql'
 import { useFormik } from 'formik'
 import Layout from '../../../components/Layout'
 import Title from '../../../components/Title'
 import Input from '../../../components/Input'
 import Button from '../../../components/Button'
 import Select from '../../../components/Select'
+import * as Yup from 'yup'
+
+let id = ''
 
 const GET_ALL_CATEGORIES = `
     query {
@@ -32,8 +35,50 @@ const UPDATE_PRODUCT = `
     }
   }
   `
+
+const ProductSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(3, 'Por favor, informe um nome com pelo menos 3 caracteres.')
+    .required('Por favor, informe um nome.'),
+  slug: Yup.string()
+    .min(3, 'Por favor, informe um slug com pelo menos 3 caracteres.')
+    .required('Por favor, informe um slug.')
+    .test(
+      'is-unique',
+      'Por favor, utilize outro slug. Este já está em uso.',
+      async value => {
+        const ret = await fetcher(
+          JSON.stringify({
+            query: `
+                query {
+                  getProductBySlug(slug: "${value}"){
+                    id
+                  }
+                }
+              
+              `
+          })
+        )
+        if (ret.errors) {
+          return true
+        }
+        if (ret.data.getProductBySlug.id === id) {
+          return true
+        }
+        return false
+      }
+    ),
+  description: Yup.string()
+    .min(20, 'Por favor, informe uma descrição com pelo menos 20 caracteres.')
+    .required('Por favor, informe uma descrição.'),
+  category: Yup.string()
+    .required('Por favor, informe uma categoria.')
+    .min(1, 'Por favor, informe uma categoria.')
+})
+
 const Edit = () => {
   const router = useRouter()
+  id = router.query.id
   const { data } = useQuery(`
     query {
       getProductById(id: "${router.query.id}") {
@@ -63,7 +108,8 @@ const Edit = () => {
       if (data && !data.errors) {
         router.push('/products')
       }
-    }
+    },
+    validationSchema: ProductSchema
   })
 
   // passsagem de dados para o formulário
@@ -105,6 +151,7 @@ const Edit = () => {
                   value={form.values.name}
                   onChange={form.handleChange}
                   name='name'
+                  errorMessage={form.errors.name}
                 ></Input>
                 <Input
                   label='Slug do produto'
@@ -113,6 +160,7 @@ const Edit = () => {
                   onChange={form.handleChange}
                   name='slug'
                   helpText='Slug é utilizado para URLs amigáveis'
+                  errorMessage={form.errors.slug}
                 ></Input>
                 <Input
                   label='Descrição do produto'
@@ -120,6 +168,7 @@ const Edit = () => {
                   value={form.values.description}
                   onChange={form.handleChange}
                   name='description'
+                  errorMessage={form.errors.description}
                 ></Input>
                 <Select
                   label='Selecione a categoria'
@@ -127,6 +176,8 @@ const Edit = () => {
                   onChange={form.handleChange}
                   value={form.values.category}
                   options={options}
+                  errorMessage={form.errors.category}
+                  initial={{ id: '', label: 'Selecione...' }}
                 />
               </div>
               <Button type={'submit'}>{'Salvar produto'}</Button>

@@ -29,7 +29,7 @@ const Select = ({
         {initial && <option value={initial.id}>{initial.label}</option>}
         {options.map(opt => {
           return (
-            <option key={opt.id} value={opt.id} checked={value === opt.id}>
+            <option key={opt.id} value={opt.id} selected={value === opt.id}>
               {opt.label}
             </option>
           )
