@@ -78,7 +78,7 @@ const Index = () => {
                                 Edit
                               </a>
                             </Link>{' '}
-                            |
+                            | {' '}
                             <a
                               href='#'
                               className='text-indigo-600 hover:text-indigo-900'
