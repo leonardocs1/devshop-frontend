@@ -16,7 +16,7 @@ mutation deleteBrand($id: String!) {
 const GET_ALL_BRANDS = `
     query {
       getAllBrands {
-        id, name, slug
+        id, name, slug, logo
       }
     }
   `
@@ -56,6 +56,13 @@ const Index = () => {
                     data.getAllBrands.map(item => {
                       return (
                         <Table.Tr key={item.id}>
+                          {item.logo && (
+                            <img
+                              src={item.logo}
+                              alt={item.name}
+                              className='h-20'
+                            ></img>
+                          )}
                           <Table.Td>
                             <div className='flex items-center'>
                               <div>
@@ -70,7 +77,7 @@ const Index = () => {
                           </Table.Td>
 
                           <Table.Td>
-                          <Link href={`/brands/${item.id}/upload`}>
+                            <Link href={`/brands/${item.id}/upload`}>
                               <a
                                 href='#'
                                 className='text-indigo-600 hover:text-indigo-900'
@@ -78,7 +85,7 @@ const Index = () => {
                                 Upload logo
                               </a>
                             </Link>{' '}
-                            | {' '}
+                            |{' '}
                             <Link href={`/brands/${item.id}/edit`}>
                               <a
                                 href='#'
