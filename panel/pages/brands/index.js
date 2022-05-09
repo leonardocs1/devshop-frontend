@@ -13,6 +13,12 @@ mutation deleteBrand($id: String!) {
 }
 `
 
+const REMOVE_BRAND_LOGO = `
+mutation removeBrandLogo($id: String!) {
+  removeBrandLogo (id: $id) 
+}
+`
+
 const GET_ALL_BRANDS = `
     query {
       getAllBrands {
@@ -24,8 +30,13 @@ const GET_ALL_BRANDS = `
 const Index = () => {
   const { data, mutate } = useQuery(GET_ALL_BRANDS)
   const [deleteData, deleteBrand] = useMutation(DELETE_BRAND)
+  const [removeBrandLogoData, deleteBrandLogo] = useMutation(REMOVE_BRAND_LOGO)
   const remove = id => async () => {
     await deleteBrand({ id })
+    mutate()
+  }
+  const removeBrandLogo = id => async () => {
+    await deleteBrandLogo({ id })
     mutate()
   }
   return (
@@ -77,6 +88,19 @@ const Index = () => {
                           </Table.Td>
 
                           <Table.Td>
+                            {item.logo && (
+                              <>
+                                <a
+                                  href='#'
+                                  className='text-indigo-600 hover:text-indigo-900'
+                                  onClick={removeBrandLogo(item.id)}
+                                >
+                                  {' '}
+                                  Remove logo
+                                </a>{' '}
+                                |{' '}
+                              </>
+                            )}
                             <Link href={`/brands/${item.id}/upload`}>
                               <a
                                 href='#'
