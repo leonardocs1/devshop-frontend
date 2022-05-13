@@ -1,24 +1,7 @@
 import { useState } from 'react'
 import useSWR from 'swr'
 
-const fetcher = async query => {
-  const accessToken = localStorage.getItem('accessToken')
-  const headers = {
-    'Content-type': 'application/json'
-  }
-  if (accessToken) {
-    headers['authorization'] = 'Bearer ' + accessToken
-  }
-  const res = await fetch(process.env.NEXT_PUBLIC_API, {
-    headers,
-    method: 'POST',
-    body: query
-  })
-  const json = await res.json()
-  if (!json.errors) {
-    return json
-  }
-
+const getNewAccessToken = async () => {
   //pegar novo
   const getAcessToken = {
     query: ` 
@@ -37,6 +20,28 @@ const fetcher = async query => {
     body: JSON.stringify(getAcessToken)
   })
   const jsonAccessToken = await resAccessToken.json()
+  return jsonAccessToken
+}
+
+const fetcher = async query => {
+  const accessToken = localStorage.getItem('accessToken')
+  const headers = {
+    'Content-type': 'application/json'
+  }
+  if (accessToken) {
+    headers['authorization'] = 'Bearer ' + accessToken
+  }
+  const res = await fetch(process.env.NEXT_PUBLIC_API, {
+    headers,
+    method: 'POST',
+    body: query
+  })
+  const json = await res.json()
+  if (!json.errors) {
+    return json
+  }
+
+  const jsonAccessToken = await getNewAccessToken()
   if (jsonAccessToken.data) {
     const newAccessToken = jsonAccessToken.data.accessToken
     localStorage.setItem('accessToken', newAccessToken)
@@ -58,18 +63,44 @@ const fetcher = async query => {
   // enviar para login
   window.location = '/'
   return null
-
-  return json
 }
 
 const uploader = async formData => {
+  const accessToken = localStorage.getItem('accessToken')
+  const headers = {}
+  if (accessToken) {
+    headers['authorization'] = 'Bearer ' + accessToken
+  }
   const res = await fetch(process.env.NEXT_PUBLIC_API, {
-    headers: {},
+    headers,
     method: 'POST',
     body: formData
   })
   const json = await res.json()
-  return json
+  if (!json.errors) {
+    return json
+  }
+
+  const jsonAccessToken = await getNewAccessToken()
+  if (jsonAccessToken.data) {
+    const newAccessToken = jsonAccessToken.data.accessToken
+    localStorage.setItem('accessToken', newAccessToken)
+    const res2 = await await fetch(process.env.NEXT_PUBLIC_API, {
+      headers: {
+        authorization: 'Bearer ' + newAccessToken
+      },
+      method: 'POST',
+      body: formData
+    })
+    const json2 = await res2.json()
+    if (!json2.errors) {
+      return json2
+    }
+  }
+
+  // enviar para login
+  window.location = '/'
+  return null
 }
 
 const useQuery = queryStr => {
