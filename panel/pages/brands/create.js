@@ -10,7 +10,7 @@ import * as Yup from 'yup'
 
 const CREATE_BRAND = `
     mutation createBrand($name: String!, $slug: String!) {
-      createBrand (input: {
+      panelCreateBrand (input: {
         name: $name,
         slug: $slug
       }) {
@@ -43,6 +43,7 @@ const BrandSchema = Yup.object().shape({
           `
           })
         )
+        console.log(ret.errors)
         if (ret.errors) {
           return true
         }

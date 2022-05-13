@@ -3,6 +3,9 @@ import useSWR from 'swr'
 
 const getNewAccessToken = async () => {
   //pegar novo
+  const headers = {
+    'Content-type': 'application/json'
+  }
   const getAcessToken = {
     query: ` 
     mutation getAccessToken($refreshToken: String!) {
@@ -37,7 +40,14 @@ const fetcher = async query => {
     body: query
   })
   const json = await res.json()
-  if (!json.errors) {
+
+  if (
+    !(
+      json.errors &&
+      json.errors[0] &&
+      json.errors[0].message === 'Forbidden resource'
+    )
+  ) {
     return json
   }
 
