@@ -9,13 +9,13 @@ import Alert from '../../components/Alert'
 
 const DELETE_BRAND = `
 mutation deleteBrand($id: String!) {
-  deleteBrand (id: $id) 
+  panelDeleteBrand (id: $id) 
 }
 `
 
 const REMOVE_BRAND_LOGO = `
 mutation removeBrandLogo($id: String!) {
-  removeBrandLogo (id: $id) 
+  panelRemoveBrandLogo (id: $id) 
 }
 `
 
@@ -67,14 +67,14 @@ const Index = () => {
                     data.getAllBrands.map(item => {
                       return (
                         <Table.Tr key={item.id}>
-                          {item.logo && (
-                            <img
-                              src={item.logo}
-                              alt={item.name}
-                              className='h-20'
-                            ></img>
-                          )}
                           <Table.Td>
+                            {item.logo && (
+                              <img
+                                src={item.logo}
+                                alt={item.name}
+                                className='h-20'
+                              ></img>
+                            )}
                             <div className='flex items-center'>
                               <div>
                                 <div className='text-sm leading-5 font-medium text-gray-900'>

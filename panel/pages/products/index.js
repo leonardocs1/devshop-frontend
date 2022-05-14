@@ -9,7 +9,7 @@ import Alert from '../../components/Alert'
 
 const DELETE_PRODUCT = `
 mutation deleteProduct($id: String!) {
-  deleteProduct (id: $id) 
+  panelDeleteProduct (id: $id) 
 }
 `
 

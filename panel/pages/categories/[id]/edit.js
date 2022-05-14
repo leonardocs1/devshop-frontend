@@ -12,7 +12,7 @@ let id = ''
 
 const UPDATE_CATEGORY = `
   mutation updateCategory($id: String!, $name: String!, $slug: String!) {
-    updateCategory(input: {
+    panelUpdateCategory(input: {
       id: $id,
       name: $name,
       slug: $slug
@@ -100,7 +100,6 @@ const Edit = () => {
       <div className='flex flex-col mt-8'>
         <div className='-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8'>
           <div className='align-middle inline-block min-w-full shadow bg-white overflow-hidden sm:rounded-lg border-b border-gray-200 p-12'>
-            <pre>{JSON.stringify(form, null, 2)}</pre>
             {updatedData && !!updatedData.errors && (
               <p className='bg-red-100 border border-red-400 mb-4 text-red-700 px-4 py-3 rounded relative'>
                 Ocorreu um erro ao salvar os dados.

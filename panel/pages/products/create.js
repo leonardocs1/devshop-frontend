@@ -11,7 +11,7 @@ import * as Yup from 'yup'
 
 const CREATE_PRODUCT = `
     mutation createProduct($name: String!, $slug: String!, $description: String!, $category: String!) {
-      createProduct (input: {
+      panelCreateProduct (input: {
         name: $name,
         slug: $slug,
         description: $description,

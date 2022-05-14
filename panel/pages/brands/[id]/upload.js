@@ -8,7 +8,7 @@ import Button from '../../../components/Button'
 
 const UPLOAD_BRAND_LOGO = `
   mutation uploadBrandLogo($id: String!, $file: Upload!) {
-    uploadBrandLogo(
+    panelUploadBrandLogo(
       id: $id,
       file: $file
     ) 

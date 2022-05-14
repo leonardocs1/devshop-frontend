@@ -10,7 +10,7 @@ import * as Yup from 'yup'
 
 const CREATE_CATEGORY = `
     mutation createCategory($name: String!, $slug: String!) {
-      createCategory (input: {
+      panelCreateCategory (input: {
         name: $name,
         slug: $slug
       }) {

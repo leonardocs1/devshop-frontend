@@ -20,7 +20,7 @@ const GET_ALL_CATEGORIES = `
   `
 const UPDATE_PRODUCT = `
   mutation updateProduct($id: String!, $name: String!, $slug: String!, $description: String!, $category: String!) {
-    updateProduct(input: {
+    panelUpdateProduct(input: {
       id: $id,
       name: $name,
       slug: $slug,

@@ -9,7 +9,7 @@ import Alert from '../../components/Alert'
 
 const DELETE_CATEGORY = `
 mutation deleteCategory($id: String!) {
-  deleteCategory (id: $id) 
+  panelDeleteCategory (id: $id) 
 }
 `
 
@@ -78,7 +78,7 @@ const Index = () => {
                                 Edit
                               </a>
                             </Link>{' '}
-                            | {' '}
+                            |{' '}
                             <a
                               href='#'
                               className='text-indigo-600 hover:text-indigo-900'
