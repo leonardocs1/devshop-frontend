@@ -70,7 +70,8 @@ const fetcher = async query => {
     }
   }
 
-  // enviar para login
+  localStorage.removeItem('accessToken')
+  localStorage.removeItem('refreshToken')
   window.location = '/'
   return null
 }
@@ -108,7 +109,8 @@ const uploader = async formData => {
     }
   }
 
-  // enviar para login
+  localStorage.removeItem('accessToken')
+  localStorage.removeItem('refreshToken')
   window.location = '/'
   return null
 }

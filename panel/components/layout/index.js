@@ -1,11 +1,23 @@
 import React, { useState } from 'react'
 import Menu from '../Menu'
 import { MdLabel, MdHome } from 'react-icons/md'
+import { useQuery } from '../../lib/graphql'
+
+const GET_ME = `
+  query {
+    panelGetMe {
+      id
+      name
+      email
+    }
+  }
+`
 
 const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [notificationOpen, setNotificationOpen] = useState(false)
+  const { data } = useQuery(GET_ME)
   const open = () => {
     setSidebarOpen(true)
   }
