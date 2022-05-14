@@ -11,12 +11,11 @@ import * as Yup from 'yup'
 let id = ''
 
 const UPDATE_USER = `
-  mutation updateCategory($id: String!, $name: String!, $email: String!, $passwd: String!, $role: String!) {
+  mutation updateCategory($id: String!, $name: String!, $email: String!, $role: String!) {
     panelUpdateUser(input: {
       id: $id,
       name: $name,
       email: $email,
-      passwd: $passwd,
       role: $role
     }) {
       id
@@ -33,35 +32,32 @@ const UserSchema = Yup.object().shape({
   email: Yup.string()
     .email()
     .min(3, 'Por favor, informe um email com pelo menos 3 caracteres.')
-    .required('Por favor, informe um email.'),
-  passwd: Yup.string()
-    .min(6, 'Por favor, informe uma senha com pelo menos 6 caracteres.')
-    .required('Por favor, informe um senha.')
-  /*slug: Yup.string()
-      .min(3, 'Por favor, informe um slug com pelo menos 3 caracteres.')
-      .required('Por favor, informe um slug.')
-      .test(
-        'is-unique',
-        'Por favor, utilize outro slug. Este já está em uso.',
-        async value => {
-          const ret = await fetcher(
-            JSON.stringify({
-              query: `
-              query {
-                getCategoryBySlug(slug: "${value}"){
-                  id
-                }
+    .required('Por favor, informe um email.')
+    .test(
+      'is-unique',
+      'Por favor, utilize outro email. Este já está em uso por outro usuário.',
+      async value => {
+        const ret = await fetcher(
+          JSON.stringify({
+            query: `
+            query {
+              panelGetUserByEmail(email: "${value}"){
+                id
               }
-            
-            `
-            })
-          )
-          if (ret.errors) {
-            return true
-          }
-          return false
+            }
+          
+          `
+          })
+        )
+        if (ret.errors) {
+          return true
         }
-      )*/
+        if (ret.data.panelGetUserByEmail.id === id) {
+          return true
+        }
+        return false
+      }
+    )
 })
 const Edit = () => {
   const router = useRouter()
@@ -78,7 +74,6 @@ const Edit = () => {
     initialValues: {
       name: '',
       email: '',
-      passwd: '',
       role: ''
     },
     onSubmit: async values => {
@@ -99,7 +94,6 @@ const Edit = () => {
       form.setFieldValue('name', data.panelGetUserById.name)
       form.setFieldValue('email', data.panelGetUserById.email)
       form.setFieldValue('role', data.panelGetUserById.role)
-      form.setFieldValue('passwd', data.panelGetUserById.passwd)
     }
   }, [data])
   return (
@@ -132,15 +126,6 @@ const Edit = () => {
                   name='email'
                   errorMessage={form.errors.email}
                   type='email'
-                ></Input>
-                <Input
-                  label='Senha'
-                  placeholder='Preencha com a senha'
-                  value={form.values.passwd}
-                  onChange={form.handleChange}
-                  name='passwd'
-                  errorMessage={form.errors.passwd}
-                  type='password'
                 ></Input>
                 <Input
                   label='Role'

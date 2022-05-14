@@ -70,12 +70,21 @@ const Index = () => {
                           </Table.Td>
 
                           <Table.Td>
+                            <Link href={`/users/${item.id}/passwd`}>
+                              <a
+                                href='#'
+                                className='text-indigo-600 hover:text-indigo-900'
+                              >
+                                Alterar senha
+                              </a>
+                            </Link>{' '}
+                            |{' '}
                             <Link href={`/users/${item.id}/edit`}>
                               <a
                                 href='#'
                                 className='text-indigo-600 hover:text-indigo-900'
                               >
-                                Edit
+                                Editar
                               </a>
                             </Link>{' '}
                             |{' '}
@@ -85,7 +94,7 @@ const Index = () => {
                               onClick={remove(item.id)}
                             >
                               {' '}
-                              Remove
+                              Remover
                             </a>
                           </Table.Td>
                         </Table.Tr>

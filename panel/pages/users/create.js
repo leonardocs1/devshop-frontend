@@ -29,23 +29,17 @@ const UserSchema = Yup.object().shape({
   email: Yup.string()
     .email()
     .min(3, 'Por favor, informe um email com pelo menos 3 caracteres.')
-    .required('Por favor, informe um email.'),
-  passwd: Yup.string()
-    .min(6, 'Por favor, informe uma senha com pelo menos 6 caracteres.')
-    .required('Por favor, informe um senha.')
-  /*slug: Yup.string()
-    .min(3, 'Por favor, informe um slug com pelo menos 3 caracteres.')
-    .required('Por favor, informe um slug.')
+    .required('Por favor, informe um email.')
     .test(
       'is-unique',
-      'Por favor, utilize outro slug. Este já está em uso.',
+      'Por favor, utilize outro email. Este já está em uso por outro usuário.',
       async value => {
         const ret = await fetcher(
           JSON.stringify({
             query: `
             query {
-              getCategoryBySlug(slug: "${value}"){
-                id
+              panelGetUserByEmail(email: "${value}"){
+                email
               }
             }
           
@@ -57,7 +51,10 @@ const UserSchema = Yup.object().shape({
         }
         return false
       }
-    )*/
+    ),
+  passwd: Yup.string()
+    .min(6, 'Por favor, informe uma senha com pelo menos 6 caracteres.')
+    .required('Por favor, informe um senha.')
 })
 
 const Index = () => {
