@@ -9,9 +9,9 @@ import Alert from '../../../components/Alert'
 import { formatDistance, subDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
-const DELETE_USER = `
-mutation deleteUser($id: String!) {
-  panelDeleteUser (id: $id) 
+const INVALIDATE_USER_SESSION = `
+mutation panelInvalidateUserSession($id: String!) {
+  panelInvalidateUserSession (id: $id) 
 }
 `
 const Sessions = () => {
@@ -19,13 +19,13 @@ const Sessions = () => {
   const { data, mutate } = useQuery(`
   query {
     panelGetAllUserSessions(id: "${router.query.id}") {
-      id, userAgent, lastUsedAt
+      id, userAgent, lastUsedAt, active
     }
   }
   `)
-  const [deleteData, deleteUser] = useMutation(DELETE_USER)
+  const [deleteData, deleteUserSession] = useMutation(INVALIDATE_USER_SESSION)
   const remove = id => async () => {
-    await deleteUser({ id })
+    await deleteUserSession({ id })
     mutate()
   }
   return (
@@ -80,14 +80,16 @@ const Sessions = () => {
                               atrás
                             </Table.Td>
                             <Table.Td>
-                              <Link href={`/users/${item.id}/edit`}>
+                              {item.active && (
                                 <a
                                   href='#'
                                   className='text-indigo-600 hover:text-indigo-900'
+                                  onClick={remove(item.id)}
                                 >
-                                  Editar
+                                  Remove
                                 </a>
-                              </Link>
+                              )}
+                              {!item.active && <span>Inativa</span>}
                             </Table.Td>
                           </Table.Tr>
                         )
