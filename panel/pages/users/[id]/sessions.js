@@ -18,7 +18,7 @@ const Sessions = () => {
   const { data, mutate } = useQuery(`
   query {
     panelGetAllUserSessions(id: "${router.query.id}") {
-      id
+      id, userAgent
     }
   }
   `)
@@ -63,10 +63,10 @@ const Sessions = () => {
                               <div className='flex items-center'>
                                 <div>
                                   <div className='text-sm leading-5 font-medium text-gray-900'>
-                                    {item.id}
+                                    {item.userAgent}
                                   </div>
                                   <div className='text-sm leading-5 text-gray-500'>
-                                    {item.name}
+                                    {item.id}
                                   </div>
                                 </div>
                               </div>
