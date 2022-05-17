@@ -10,12 +10,16 @@ import Select from '../../components/Select'
 import * as Yup from 'yup'
 
 const CREATE_PRODUCT = `
-    mutation createProduct($name: String!, $slug: String!, $description: String!, $category: String!) {
+    mutation createProduct($name: String!, $slug: String!, $description: String!, 
+    $category: String!, $sku: String, $price: Float, $weight: Float) {
       panelCreateProduct (input: {
         name: $name,
         slug: $slug,
         description: $description,
-        category: $category
+        category: $category,
+        sku: $sku,
+        price: $price,
+        weight: $weight
       }) {
         id
         name
@@ -78,10 +82,18 @@ const Index = () => {
       name: '',
       slug: '',
       description: '',
-      category: ''
+      category: '',
+      sku: '',
+      price: 0,
+      weight: 0
     },
     onSubmit: async values => {
-      const data = await createProduct(values)
+      const newValues = {
+        ...values,
+        price: Number(values.price),
+        weight: Number(values.weight)
+      }
+      const data = await createProduct(newValues)
       if (data && !data.errors) {
         router.push('/products')
       }
@@ -148,6 +160,30 @@ const Index = () => {
                   errorMessage={form.errors.category}
                   initial={{ id: '', label: 'Selecione...' }}
                 />
+                <Input
+                  label='SKU do produto'
+                  placeholder='Preencha com o SKU do produto'
+                  value={form.values.sku}
+                  onChange={form.handleChange}
+                  name='sku'
+                  errorMessage={form.errors.sku}
+                ></Input>
+                <Input
+                  label='Preço do produto'
+                  placeholder='Preencha com o preço do produto'
+                  value={form.values.price}
+                  onChange={form.handleChange}
+                  name='price'
+                  errorMessage={form.errors.price}
+                ></Input>
+                <Input
+                  label='Peso do produto (em gramas)'
+                  placeholder='Preencha com o peso do produto'
+                  value={form.values.weight}
+                  onChange={form.handleChange}
+                  name='weight'
+                  errorMessage={form.errors.weight}
+                ></Input>
               </div>
               <Button type={'submit'}>{'Criar produto'}</Button>
             </form>
