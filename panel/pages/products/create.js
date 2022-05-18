@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Layout from '../../components/Layout'
 import Title from '../../components/Title'
 import { useMutation, useQuery, fetcher } from '../../lib/graphql'
@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 import Button from '../../components/Button'
 import Input from '../../components/Input'
 import Select from '../../components/Select'
+import Table from '../../components/Table'
 import * as Yup from 'yup'
 
 const CREATE_PRODUCT = `
@@ -75,6 +76,7 @@ const ProductSchema = Yup.object().shape({
 
 const Index = () => {
   const router = useRouter()
+  const [variations, setVariations] = useState([])
   const [data, createProduct] = useMutation(CREATE_PRODUCT)
   const { data: categories, mutate } = useQuery(GET_ALL_CATEGORIES)
   const form = useFormik({
@@ -85,7 +87,9 @@ const Index = () => {
       category: '',
       sku: '',
       price: 0,
-      weight: 0
+      weight: 0,
+      optionName1: '',
+      optionName2: ''
     },
     onSubmit: async values => {
       const newValues = {
@@ -107,6 +111,14 @@ const Index = () => {
         id: item.id,
         label: item.name
       }
+    })
+  }
+  const addVariation = () => {
+    setVariations(old => {
+      return [
+        ...old,
+        { optionName1: '', optionName2: '', sku: '', price: '', weight: '' }
+      ]
     })
   }
   return (
@@ -150,7 +162,7 @@ const Index = () => {
                   onChange={form.handleChange}
                   name='description'
                   errorMessage={form.errors.description}
-                ></Input>
+                />
                 <Select
                   label='Selecione a categoria'
                   name='category'
@@ -167,7 +179,7 @@ const Index = () => {
                   onChange={form.handleChange}
                   name='sku'
                   errorMessage={form.errors.sku}
-                ></Input>
+                />
                 <Input
                   label='Preço do produto'
                   placeholder='Preencha com o preço do produto'
@@ -175,7 +187,7 @@ const Index = () => {
                   onChange={form.handleChange}
                   name='price'
                   errorMessage={form.errors.price}
-                ></Input>
+                />
                 <Input
                   label='Peso do produto (em gramas)'
                   placeholder='Preencha com o peso do produto'
@@ -183,8 +195,51 @@ const Index = () => {
                   onChange={form.handleChange}
                   name='weight'
                   errorMessage={form.errors.weight}
-                ></Input>
+                />
+                <h3>Variações / grade de produtos:</h3>
+                <Input
+                  label='Opção de variação 1'
+                  placeholder='Preencha com o peso do produto'
+                  value={form.values.optionName1}
+                  onChange={form.handleChange}
+                  name='optionName1'
+                  errorMessage={form.errors.optionName1}
+                />
+                <Input
+                  label='Opção de variação 2'
+                  placeholder='Preencha com o peso do produto'
+                  value={form.values.optionName2}
+                  onChange={form.handleChange}
+                  name='optionName2'
+                  errorMessage={form.errors.optionName2}
+                />
               </div>
+              <pre>{JSON.stringify(variations, null, 2)}</pre>
+              {form.values.optionName1 !== '' && (
+                <>
+                  <div>
+                    <Button onClick={addVariation}>Adicionar variação</Button>
+                    <Table>
+                      <Table.Head>
+                        <Table.Th>{form.values.optionName1}</Table.Th>
+                        <Table.Th>{form.values.optionName2}</Table.Th>
+                        <Table.Th></Table.Th>
+                      </Table.Head>
+                      <Table.Body>
+                        {variations.map((variation, index) => {
+                          return (
+                            <Table.Tr key={index}>
+                              <Table.Td>
+                                Variation{variation.optionName1}
+                              </Table.Td>
+                            </Table.Tr>
+                          )
+                        })}
+                      </Table.Body>
+                    </Table>
+                  </div>
+                </>
+              )}
               <Button type={'submit'}>{'Criar produto'}</Button>
             </form>
           </div>
