@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Layout from '../../components/Layout'
 import Title from '../../components/Title'
 import { useMutation, useQuery, fetcher } from '../../lib/graphql'
-import { useFormik } from 'formik'
+import { useFormik, FieldArray, FormikProvider } from 'formik'
 import { useRouter } from 'next/router'
 import Button from '../../components/Button'
 import Input from '../../components/Input'
@@ -89,7 +89,8 @@ const Index = () => {
       price: 0,
       weight: 0,
       optionName1: '',
-      optionName2: ''
+      optionName2: '',
+      variations: []
     },
     onSubmit: async values => {
       const newValues = {
@@ -214,30 +215,115 @@ const Index = () => {
                   errorMessage={form.errors.optionName2}
                 />
               </div>
-              <pre>{JSON.stringify(variations, null, 2)}</pre>
               {form.values.optionName1 !== '' && (
                 <>
-                  <div>
-                    <Button onClick={addVariation}>Adicionar variação</Button>
-                    <Table>
-                      <Table.Head>
-                        <Table.Th>{form.values.optionName1}</Table.Th>
-                        <Table.Th>{form.values.optionName2}</Table.Th>
-                        <Table.Th></Table.Th>
-                      </Table.Head>
-                      <Table.Body>
-                        {variations.map((variation, index) => {
-                          return (
-                            <Table.Tr key={index}>
-                              <Table.Td>
-                                Variation{variation.optionName1}
-                              </Table.Td>
-                            </Table.Tr>
-                          )
-                        })}
-                      </Table.Body>
-                    </Table>
-                  </div>
+                  <FormikProvider value={form}>
+                    <FieldArray
+                      name='variations'
+                      render={arrayHelpers => {
+                        return (
+                          <div className='shadow'>
+                            <Button
+                              onClick={() =>
+                                arrayHelpers.push({
+                                  optionName1: '',
+                                  optionName2: '',
+                                  sku: '',
+                                  price: 0,
+                                  weight: 0
+                                })
+                              }
+                            >
+                              Adicionar variação
+                            </Button>
+                            <Table>
+                              <Table.Head>
+                                <Table.Th>{form.values.optionName1}</Table.Th>
+                                {form.values.optionName2 !== '' && (
+                                  <Table.Th>{form.values.optionName2}</Table.Th>
+                                )}
+                                <Table.Th>SKU</Table.Th>
+                                <Table.Th>Preço</Table.Th>
+                                <Table.Th>Peso</Table.Th>
+                                <Table.Th></Table.Th>
+                              </Table.Head>
+                              <Table.Body>
+                                {form.values.variations.map(
+                                  (variation, index) => {
+                                    return (
+                                      <Table.Tr key={index}>
+                                        <Table.Td>
+                                          <Input
+                                            label={form.values.optionName1}
+                                            placeholder='Preencha com o nome da variação'
+                                            value={
+                                              form.values.variations[index]
+                                                .optionName1
+                                            }
+                                            onChange={form.handleChange}
+                                            name={`variations.${index}.optionName1`}
+                                          />
+                                        </Table.Td>
+                                        {form.values.optionName2 !== '' && (
+                                          <Table.Td>
+                                            <Input
+                                              label={form.values.optionName2}
+                                              placeholder='Preencha com o nome da variação'
+                                              value={
+                                                form.values.variations[index]
+                                                  .optionName2
+                                              }
+                                              onChange={form.handleChange}
+                                              name={`variations.${index}.optionName2`}
+                                            />
+                                          </Table.Td>
+                                        )}
+                                        <Table.Td>
+                                          <Input
+                                            label='SKU'
+                                            placeholder='Preencha com o SKU'
+                                            value={
+                                              form.values.variations[index].sku
+                                            }
+                                            onChange={form.handleChange}
+                                            name={`variations.${index}.sku`}
+                                          />
+                                        </Table.Td>
+                                        <Table.Td>
+                                          <Input
+                                            label='Preço'
+                                            placeholder='Preencha com o preço da variação'
+                                            value={
+                                              form.values.variations[index]
+                                                .price
+                                            }
+                                            onChange={form.handleChange}
+                                            name={`variations.${index}.price`}
+                                          />
+                                        </Table.Td>
+                                        <Table.Td>
+                                          <Input
+                                            label='Peso'
+                                            placeholder='Preencha com o peso da variação'
+                                            value={
+                                              form.values.variations[index]
+                                                .weight
+                                            }
+                                            onChange={form.handleChange}
+                                            name={`variations.${index}.weight`}
+                                          />
+                                        </Table.Td>
+                                      </Table.Tr>
+                                    )
+                                  }
+                                )}
+                              </Table.Body>
+                            </Table>
+                          </div>
+                        )
+                      }}
+                    />
+                  </FormikProvider>
                 </>
               )}
               <Button type={'submit'}>{'Criar produto'}</Button>
