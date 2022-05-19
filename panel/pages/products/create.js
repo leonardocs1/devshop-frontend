@@ -227,7 +227,6 @@ const Index = () => {
               </div>
               {form.values.optionName1 !== '' && (
                 <>
-                  <pre>{JSON.stringify(form.values, null, 2)}</pre>
                   <FormikProvider value={form}>
                     <FieldArray
                       name='variations'
@@ -324,6 +323,16 @@ const Index = () => {
                                             onChange={form.handleChange}
                                             name={`variations.${index}.weight`}
                                           />
+                                        </Table.Td>
+                                        <Table.Td>
+                                          <Button
+                                            type='button'
+                                            onClick={() =>
+                                              arrayHelpers.remove(index)
+                                            }
+                                          >
+                                            Excluir
+                                          </Button>
                                         </Table.Td>
                                       </Table.Tr>
                                     )
