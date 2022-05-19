@@ -12,7 +12,7 @@ import * as Yup from 'yup'
 
 const CREATE_PRODUCT = `
     mutation createProduct($name: String!, $slug: String!, $description: String!, 
-    $category: String!, $sku: String, $price: Float, $weight: Float) {
+    $category: String!, $sku: String, $price: Float, $weight: Float, $optionNames: [String!], $variations: [VariationInput!]) {
       panelCreateProduct (input: {
         name: $name,
         slug: $slug,
@@ -20,7 +20,9 @@ const CREATE_PRODUCT = `
         category: $category,
         sku: $sku,
         price: $price,
-        weight: $weight
+        weight: $weight,
+        optionNames: $optionNames,
+        variations: $variations
       }) {
         id
         name
@@ -96,7 +98,15 @@ const Index = () => {
       const newValues = {
         ...values,
         price: Number(values.price),
-        weight: Number(values.weight)
+        weight: Number(values.weight),
+        optionNames: [values.optionName1, values.optionName2],
+        variations: values.variations.map(variation => {
+          return {
+            ...variation,
+            price: Number(variation.price),
+            weight: Number(variation.weight)
+          }
+        })
       }
       const data = await createProduct(newValues)
       if (data && !data.errors) {
@@ -217,6 +227,7 @@ const Index = () => {
               </div>
               {form.values.optionName1 !== '' && (
                 <>
+                  <pre>{JSON.stringify(form.values, null, 2)}</pre>
                   <FormikProvider value={form}>
                     <FieldArray
                       name='variations'
@@ -224,6 +235,7 @@ const Index = () => {
                         return (
                           <div className='shadow'>
                             <Button
+                              type={'button'}
                               onClick={() =>
                                 arrayHelpers.push({
                                   optionName1: '',
