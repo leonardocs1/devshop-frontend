@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { useUpload, useQuery, fetcher } from '../../../lib/graphql'
+import { useUpload, useQuery, fetcher, useMutation } from '../../../lib/graphql'
 import { useFormik } from 'formik'
 import Layout from '../../../components/Layout'
 import Title from '../../../components/Title'
@@ -15,8 +15,14 @@ const UPLOAD_BRAND_LOGO = `
   }
   `
 
+const DELETE_IMAGE = `
+mutation deleteProductImage($id: String!, $url: String!) {
+  panelDeleteProductImage (id: $id, url: $url) 
+}`
+
 const Upload = () => {
   const router = useRouter()
+  const [deleteData, deleteImage] = useMutation(DELETE_IMAGE)
   const { data, mutate } = useQuery(`
     query {
       getProductById(id: "${router.query.id}") {
@@ -43,14 +49,33 @@ const Upload = () => {
     }
   })
 
+  const delImage = url => async () => {
+    await deleteImage({ id: router.query.id, url })
+    mutate()
+  }
+
   return (
     <Layout>
       <Title>Upload de images do produto: {data?.getProductById?.name} </Title>
       <div className='mt-8'></div>
+      {data?.getProductById?.images.length === 0 && (
+        <p className='rounded bg-white shadow py-2 px-4'>
+          Nenhuma imagem enviada até o momento.
+        </p>
+      )}
       {data?.getProductById?.images.map(img => {
         return (
-          <div key={img}>
+          <div
+            key={img}
+            className='p-2 border border-gray-500 rounded hover:bg-gray-400'
+          >
             <img src={img} className='rounded m-1' />
+            <button
+              className='bg-red-400 text-white font-bold p-2 rounded mt-1'
+              onClick={delImage(img)}
+            >
+              Remover
+            </button>
           </div>
         )
       })}
@@ -72,7 +97,7 @@ const Upload = () => {
                   }}
                 />
               </div>
-              <Button type={'submit'}>{'Salvar marca'}</Button>
+              <Button type={'submit'}>{'Enviar imagem'}</Button>
             </form>
           </div>
         </div>
