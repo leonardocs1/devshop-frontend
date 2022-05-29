@@ -15,10 +15,20 @@ const GET_ALL_BRANDS = gql`
   }
 `
 
-const Index = ({ brands }) => {
+const GET_ALL_CATEGORIES = gql`
+  query {
+    categories: getAllCategories {
+      id
+      name
+      slug
+    }
+  }
+`
+
+const Index = ({ brands, categories }) => {
   return (
     <>
-      <Layout>
+      <Layout categories={categories}>
         <Seo />
         <h1>DevShop</h1>
         <Brands brands={brands} />
@@ -28,9 +38,11 @@ const Index = ({ brands }) => {
 }
 export async function getServerSideProps(context) {
   const { brands } = await fetcher(GET_ALL_BRANDS)
+  const { categories } = await fetcher(GET_ALL_CATEGORIES)
   return {
     props: {
-      brands
+      brands,
+      categories
     }
   }
 }
