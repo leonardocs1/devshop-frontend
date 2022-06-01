@@ -17,7 +17,7 @@ const Brands = ({ brands }) => {
             return (
               <div className='lg:w-1/3 sm:w-1/2 p-4'>
                 <div className='flex relative h-48'>
-                  <Link href={'/marcas/ ' + brand.slug}>
+                  <Link href={'/marca/' + brand.slug}>
                     <a className='block absolute w-full h-48'>
                       <img
                         alt='gallery'

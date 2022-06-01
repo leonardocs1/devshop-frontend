@@ -58,7 +58,7 @@ const Upload = () => {
     <Layout>
       <Title>Upload de images do produto: {data?.getProductById?.name} </Title>
       <div className='mt-8'></div>
-      {data?.getProductById?.images.length === 0 && (
+      {data?.getProductById?.images?.length === 0 && (
         <p className='rounded bg-white shadow py-2 px-4'>
           Nenhuma imagem enviada até o momento.
         </p>
