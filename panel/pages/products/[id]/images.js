@@ -20,12 +20,11 @@ mutation deleteProductImage($id: String!, $url: String!) {
   panelDeleteProductImage (id: $id, url: $url) 
 }`
 
-const Upload = () => {
-  const router = useRouter()
+const Upload = ({ id }) => {
   const [deleteData, deleteImage] = useMutation(DELETE_IMAGE)
   const { data, mutate } = useQuery(`
     query {
-      getProductById(id: "${router.query.id}") {
+      getProductById(id: "${id}") {
         id, name, slug, images
       }
     }
@@ -33,13 +32,13 @@ const Upload = () => {
   const [updatedData, uploadProductImage] = useUpload(UPLOAD_BRAND_LOGO)
   const form = useFormik({
     initialValues: {
-      id: router.query.id,
+      id: id,
       file: ''
     },
     onSubmit: async values => {
       const product = {
         ...values,
-        id: router.query.id
+        id: id
       }
       const data = await uploadProductImage(product)
       if (data && !data.errors) {
@@ -50,7 +49,7 @@ const Upload = () => {
   })
 
   const delImage = url => async () => {
-    await deleteImage({ id: router.query.id, url })
+    await deleteImage({ id: id, url })
     mutate()
   }
 
@@ -58,27 +57,29 @@ const Upload = () => {
     <Layout>
       <Title>Upload de images do produto: {data?.getProductById?.name} </Title>
       <div className='mt-8'></div>
-      {data?.getProductById?.images?.length === 0 && (
+      {(data?.getProductById?.images?.length === null ||
+        data?.getProductById?.images?.length === 0) && (
         <p className='rounded bg-white shadow py-2 px-4'>
           Nenhuma imagem enviada até o momento.
         </p>
       )}
-      {data?.getProductById?.images.map(img => {
-        return (
-          <div
-            key={img}
-            className='p-2 border border-gray-500 rounded hover:bg-gray-400'
-          >
-            <img src={img} className='rounded m-1' />
-            <button
-              className='bg-red-400 text-white font-bold p-2 rounded mt-1'
-              onClick={delImage(img)}
+      {data?.getProductById?.images &&
+        data?.getProductById?.images.map(img => {
+          return (
+            <div
+              key={img}
+              className='p-2 border border-gray-500 rounded hover:bg-gray-400'
             >
-              Remover
-            </button>
-          </div>
-        )
-      })}
+              <img src={img} className='rounded m-1' />
+              <button
+                className='bg-red-400 text-white font-bold p-2 rounded mt-1'
+                onClick={delImage(img)}
+              >
+                Remover
+              </button>
+            </div>
+          )
+        })}
       <div className='flex flex-col mt-8'>
         <div className='-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8'>
           <div className='align-middle inline-block min-w-full shadow bg-white overflow-hidden sm:rounded-lg border-b border-gray-200 p-12'>
@@ -105,4 +106,13 @@ const Upload = () => {
     </Layout>
   )
 }
-export default Upload
+
+const UploadWrapper = () => {
+  const router = useRouter()
+  if (router.query.id) {
+    return <Upload id={router.query.id} />
+  }
+  return <p>Loading...</p>
+}
+
+export default UploadWrapper
