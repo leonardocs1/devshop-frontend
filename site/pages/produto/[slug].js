@@ -1,6 +1,7 @@
 import { gql } from 'graphql-request'
 import { fetcher } from '../../lib/graphql'
 import Layout from '../../components/Layout'
+import { useState } from 'react'
 
 const GET_ALL_CATEGORIES = gql`
   query {
@@ -26,27 +27,50 @@ const GET_PRODUCT_BY_SLUG = gql`
 `
 
 const Product = ({ product, categories }) => {
+  const [currentImage, setCurrentImage] = useState(0)
+  const setImage = index => () => {
+    setCurrentImage(index)
+  }
   return (
     <Layout categories={categories}>
       <h1>Marca </h1>
-
       <section class='text-gray-600 body-font overflow-hidden'>
         <div class='container px-5 py-24 mx-auto'>
           <div class='lg:w-4/5 mx-auto flex flex-wrap'>
-            {product.images && product.images.length > 0 && (
-              <img
-                alt='https://dummyimage.com/420x260'
-                class='lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded'
-                src={product.images[0]}
-              />
-            )}
-            {!product.images ||
-              (product.images.length === 0 && (
-                <img
-                  src='https://dummyimage.com/420x260'
-                  class='lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded'
-                ></img>
-              ))}
+            <div className='lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded'>
+              <div>
+                {product.images && product.images.length > 0 && (
+                  <img
+                    alt='https://dummyimage.com/420x260'
+                    class='w-full lg:h-auto h-64 object-cover object-center rounded'
+                    src={product.images[currentImage]}
+                  />
+                )}
+                {!product.images ||
+                  (product.images.length === 0 && (
+                    <img
+                      src='https://dummyimage.com/420x260'
+                      class='w-full lg:h-auto h-64 object-cover object-center rounded'
+                    ></img>
+                  ))}
+              </div>
+
+              {product.images && product.images.length > 1 && (
+                <div>
+                  {product.images.map((img, index) => (
+                    <img
+                      onClick={setImage(index)}
+                      src={img}
+                      className={`cursor-pointer transition-all inline-block w-32 m-1 ${
+                        index === currentImage
+                          ? 'border-gray-600 border-2 p-2'
+                          : 'p-4'
+                      }`}
+                    ></img>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <div class='lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0'>
               <h2 class='text-sm title-font text-gray-500 tracking-widest'>
