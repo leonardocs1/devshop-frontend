@@ -1,4 +1,5 @@
 import { gql } from 'graphql-request'
+import Link from 'next/link'
 import Layout from '../../components/Layout'
 import { fetcher } from '../../lib/graphql'
 
@@ -52,7 +53,9 @@ const Categoria = ({ products, categories }) => {
                       CATEGORY
                     </h3>
                     <h2 class='text-gray-900 title-font text-lg font-medium'>
-                      {product.name}
+                      <Link href={`/produto/${product.slug}`}>
+                        <a>{product.name}</a>
+                      </Link>
                     </h2>
                     <p class='mt-1'>R${product.price.toFixed(2)}</p>
                   </div>
