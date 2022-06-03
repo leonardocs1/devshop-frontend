@@ -22,6 +22,15 @@ const GET_PRODUCT_BY_SLUG = gql`
       price
       description
       images
+      optionNames
+      variations {
+        optionName1
+        optionName2
+        sku
+        price
+        weight
+        stock
+      }
     }
   }
 `
@@ -31,8 +40,15 @@ const Product = ({ product, categories }) => {
   const setImage = index => () => {
     setCurrentImage(index)
   }
+  const possibleValues1 = [
+    ...new Set(product.variations.map(pv => pv.optionName1))
+  ]
+  const possibleValues2 = [
+    ...new Set(product.variations.map(pv => pv.optionName2))
+  ]
   return (
     <Layout categories={categories}>
+      {/* <pre>{JSON.stringify(product, null, 2)}</pre> */}
       <h1>Marca </h1>
       <section class='text-gray-600 body-font overflow-hidden'>
         <div class='container px-5 py-24 mx-auto'>
@@ -179,20 +195,36 @@ const Product = ({ product, categories }) => {
               </div>
               <p class='leading-relaxed'>{product.description}</p>
               <div class='flex mt-6 items-center pb-5 border-b-2 border-gray-100 mb-5'>
-                <div class='flex'>
-                  <span class='mr-3'>Color</span>
-                  <button class='border-2 border-gray-300 rounded-full w-6 h-6 focus:outline-none'></button>
-                  <button class='border-2 border-gray-300 ml-1 bg-gray-700 rounded-full w-6 h-6 focus:outline-none'></button>
-                  <button class='border-2 border-gray-300 ml-1 bg-indigo-500 rounded-full w-6 h-6 focus:outline-none'></button>
-                </div>
-                <div class='flex ml-6 items-center'>
-                  <span class='mr-3'>Size</span>
+                <div class='flex items-center'>
+                  <span class='mr-3'>{product.optionNames[0]}</span>
                   <div class='relative'>
                     <select class='rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 text-base pl-3 pr-10'>
-                      <option>SM</option>
-                      <option>M</option>
-                      <option>L</option>
-                      <option>XL</option>
+                      {possibleValues1.map(pv => (
+                        <option key={pv}>{pv}</option>
+                      ))}
+                    </select>
+                    <span class='absolute right-0 top-0 h-full w-10 text-center text-gray-600 pointer-events-none flex items-center justify-center'>
+                      <svg
+                        fill='none'
+                        stroke='currentColor'
+                        stroke-linecap='round'
+                        stroke-linejoin='round'
+                        stroke-width='2'
+                        class='w-4 h-4'
+                        viewBox='0 0 24 24'
+                      >
+                        <path d='M6 9l6 6 6-6'></path>
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+                <div class='flex ml-6 items-center'>
+                  <span class='mr-3'>{product.optionNames[1]}</span>
+                  <div class='relative'>
+                    <select class='rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 text-base pl-3 pr-10'>
+                      {possibleValues2.map(pv => (
+                        <option key={pv}>{pv}</option>
+                      ))}
                     </select>
                     <span class='absolute right-0 top-0 h-full w-10 text-center text-gray-600 pointer-events-none flex items-center justify-center'>
                       <svg
