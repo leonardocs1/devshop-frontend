@@ -37,6 +37,8 @@ const GET_PRODUCT_BY_SLUG = gql`
 
 const Product = ({ product, categories }) => {
   const [currentImage, setCurrentImage] = useState(0)
+  const [variation1, setVariation1] = useState('')
+  const [variation2, setVariation2] = useState('')
   const setImage = index => () => {
     setCurrentImage(index)
   }
@@ -46,9 +48,23 @@ const Product = ({ product, categories }) => {
   const possibleValues2 = [
     ...new Set(product.variations.map(pv => pv.optionName2))
   ]
+  const onChangeVariation1 = evt => {
+    setVariation1(evt.target.value)
+  }
+  const onChangeVariation2 = evt => {
+    setVariation2(evt.target.value)
+  }
+
+  const validVariations1 = product.variations
+    .filter(item => item.optionName2 === variation2)
+    .map(pv => pv.optionName1)
+
+  const validVariations2 = product.variations
+    .filter(item => item.optionName1 === variation1)
+    .map(pv => pv.optionName2)
+
   return (
     <Layout categories={categories}>
-      {/* <pre>{JSON.stringify(product, null, 2)}</pre> */}
       <h1>Marca </h1>
       <section class='text-gray-600 body-font overflow-hidden'>
         <div class='container px-5 py-24 mx-auto'>
@@ -198,9 +214,20 @@ const Product = ({ product, categories }) => {
                 <div class='flex items-center'>
                   <span class='mr-3'>{product.optionNames[0]}</span>
                   <div class='relative'>
-                    <select class='rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 text-base pl-3 pr-10'>
+                    <select
+                      onChange={onChangeVariation1}
+                      class='rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 text-base pl-3 pr-10'
+                    >
+                      <option value=''>{product.optionNames[0]}</option>
                       {possibleValues1.map(pv => (
-                        <option key={pv}>{pv}</option>
+                        <option
+                          key={pv}
+                          disabled={validVariations1.indexOf(pv) >= 0}
+                        >
+                          {pv}{' '}
+                          {validVariations1.indexOf(pv) >= 0 &&
+                            ' - (indisponível)'}
+                        </option>
                       ))}
                     </select>
                     <span class='absolute right-0 top-0 h-full w-10 text-center text-gray-600 pointer-events-none flex items-center justify-center'>
@@ -221,9 +248,20 @@ const Product = ({ product, categories }) => {
                 <div class='flex ml-6 items-center'>
                   <span class='mr-3'>{product.optionNames[1]}</span>
                   <div class='relative'>
-                    <select class='rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 text-base pl-3 pr-10'>
+                    <select
+                      onChange={onChangeVariation2}
+                      class='rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 text-base pl-3 pr-10'
+                    >
+                      <option value=''>{product.optionNames[1]}</option>
                       {possibleValues2.map(pv => (
-                        <option key={pv}>{pv}</option>
+                        <option
+                          key={pv}
+                          disabled={validVariations2.indexOf(pv) >= 0}
+                        >
+                          {pv}{' '}
+                          {validVariations2.indexOf(pv) >= 0 &&
+                            ' - (indisponível)'}
+                        </option>
                       ))}
                     </select>
                     <span class='absolute right-0 top-0 h-full w-10 text-center text-gray-600 pointer-events-none flex items-center justify-center'>
