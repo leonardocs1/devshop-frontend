@@ -63,6 +63,23 @@ const Product = ({ product, categories }) => {
     .filter(item => item.optionName1 === variation1)
     .map(pv => pv.optionName2)
 
+  const isVariation1Disable = value => {
+    return !(variation2 === '' || validVariations1.indexOf(value) >= 0)
+  }
+
+  const isVariation2Disable = value => {
+    return !(variation1 === '' || validVariations2.indexOf(value) >= 0)
+  }
+
+  const selectedVariation = product.variations
+    .filter(item => item.optionName1 === variation1)
+    .filter(item => item.optionName2 === variation2)
+
+  const selectPrice =
+    selectedVariation && selectedVariation[0] && selectedVariation[0].price
+      ? selectedVariation[0].price
+      : product.price
+
   return (
     <Layout categories={categories}>
       <h1>Marca </h1>
@@ -220,13 +237,8 @@ const Product = ({ product, categories }) => {
                     >
                       <option value=''>{product.optionNames[0]}</option>
                       {possibleValues1.map(pv => (
-                        <option
-                          key={pv}
-                          disabled={validVariations1.indexOf(pv) >= 0}
-                        >
-                          {pv}{' '}
-                          {validVariations1.indexOf(pv) >= 0 &&
-                            ' - (indisponível)'}
+                        <option key={pv} disabled={isVariation1Disable(pv)}>
+                          {pv} {isVariation1Disable(pv) && ' - (indisponível)'}
                         </option>
                       ))}
                     </select>
@@ -254,13 +266,8 @@ const Product = ({ product, categories }) => {
                     >
                       <option value=''>{product.optionNames[1]}</option>
                       {possibleValues2.map(pv => (
-                        <option
-                          key={pv}
-                          disabled={validVariations2.indexOf(pv) >= 0}
-                        >
-                          {pv}{' '}
-                          {validVariations2.indexOf(pv) >= 0 &&
-                            ' - (indisponível)'}
+                        <option key={pv} disabled={isVariation2Disable(pv)}>
+                          {pv} {isVariation2Disable(pv) && ' - (indisponível)'}
                         </option>
                       ))}
                     </select>
@@ -282,7 +289,7 @@ const Product = ({ product, categories }) => {
               </div>
               <div class='flex'>
                 <span class='title-font font-medium text-2xl text-gray-900'>
-                  R$ {product.price.toFixed(2)}
+                  R$ {selectPrice.toFixed(2)}
                 </span>
                 <button class='flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded'>
                   Adicionar no Carrinho
