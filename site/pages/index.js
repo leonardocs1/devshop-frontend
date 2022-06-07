@@ -1,8 +1,9 @@
 import Seo from '../components/Seo'
 import Layout from '../components/Layout'
-import { fetcher, useQuery } from '../lib/graphql'
+import { fetcher } from '../lib/graphql'
 import { gql } from 'graphql-request'
 import Brands from '../components/Home/Brands'
+import { useCart } from '../lib/CartContext'
 
 const GET_ALL_BRANDS = gql`
   query {
@@ -26,11 +27,14 @@ const GET_ALL_CATEGORIES = gql`
 `
 
 const Index = ({ brands, categories }) => {
+  const cart = useCart()
   return (
     <>
       <Layout categories={categories}>
         <Seo />
         <h1>DevShop</h1>
+        <pre>{JSON.stringify(cart, null, 2)}</pre>
+        <button onClick={() => cart.setCount(curr => curr + 1)}>Click</button>
         <Brands brands={brands} />
       </Layout>
     </>
