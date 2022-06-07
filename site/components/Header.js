@@ -36,7 +36,7 @@ const Header = ({ categories }) => {
         </nav>
         <Link href='/cart'>
           <button className='inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0'>
-            Carrinho {cart.size}
+            Carrinho {cart.size > 0 && <span>({cart.size})</span>}
             <svg
               fill='none'
               stroke='currentColor'
