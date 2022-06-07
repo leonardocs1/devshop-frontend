@@ -2,6 +2,7 @@ import { gql } from 'graphql-request'
 import { fetcher } from '../../lib/graphql'
 import Layout from '../../components/Layout'
 import { useState } from 'react'
+import { useCart } from '../../lib/CartContext'
 
 const GET_ALL_CATEGORIES = gql`
   query {
@@ -36,6 +37,7 @@ const GET_PRODUCT_BY_SLUG = gql`
 `
 
 const Product = ({ product, categories }) => {
+  const cart = useCart()
   const [currentImage, setCurrentImage] = useState(0)
   const [variation1, setVariation1] = useState('')
   const [variation2, setVariation2] = useState('')
@@ -291,7 +293,10 @@ const Product = ({ product, categories }) => {
                 <span class='title-font font-medium text-2xl text-gray-900'>
                   R$ {selectPrice.toFixed(2)}
                 </span>
-                <button class='flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded'>
+                <button
+                  onClick={() => cart.addToCart(product)}
+                  class='flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded'
+                >
                   Adicionar no Carrinho
                 </button>
                 <button class='rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4'>

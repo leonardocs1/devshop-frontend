@@ -34,7 +34,6 @@ const Index = ({ brands, categories }) => {
         <Seo />
         <h1>DevShop</h1>
         <pre>{JSON.stringify(cart, null, 2)}</pre>
-        <button onClick={() => cart.setCount(curr => curr + 1)}>Click</button>
         <Brands brands={brands} />
       </Layout>
     </>
