@@ -294,7 +294,7 @@ const Product = ({ product, categories }) => {
                   R$ {selectPrice.toFixed(2)}
                 </span>
                 <button
-                  onClick={() => cart.addToCart(product)}
+                  onClick={() => cart.addToCart(product, selectedVariation)}
                   class='flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded'
                 >
                   Adicionar no Carrinho
