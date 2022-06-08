@@ -28,7 +28,6 @@ export const CartProvider = ({ children }) => {
   const addToCart = (product, selectedVariation) => {
     const variation = selectedVariation[0]
     const variationId = variation.optionName1 + variation.optionName2
-    console.log(variation)
     setItems(current => {
       const newCart = { ...current }
       if (current[product.id]) {
@@ -69,10 +68,32 @@ export const CartProvider = ({ children }) => {
       return newCart
     })
   }
+  const removeVariationFromCart = (product, productVariation) => {
+    console.log('remove variation', product, productVariation)
+    setItems(current => {
+      let newCart = { ...current }
+      if (Object.keys(newCart[product].qtd).length === 1) {
+        const { [product]: etc, ...newCartWithoutProduct } = current
+        newCart = newCartWithoutProduct
+      } else {
+        const { [productVariation]: etc, ...newQtd } = newCart[product].qtd
+        newCart[product].qtd = newQtd
+      }
+      localStorage.setItem('cart', JSON.stringify(newCart))
+      return newCart
+    })
+  }
   const size = Object.keys(items).length
-
   return (
-    <CartContext.Provider value={{ items, addToCart, size, removeFromCart }}>
+    <CartContext.Provider
+      value={{
+        items,
+        addToCart,
+        size,
+        removeFromCart,
+        removeVariationFromCart
+      }}
+    >
       {children}
     </CartContext.Provider>
   )

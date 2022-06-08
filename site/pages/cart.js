@@ -79,7 +79,11 @@ const Cart = ({ brands, categories }) => {
                                 </p>
                                 <button
                                   onClick={() =>
-                                    cart.removeFromCart({ id: product.id })
+                                    // cart.removeFromCart({ id: product.id })
+                                    cart.removeVariationFromCart(
+                                      product.id,
+                                      key
+                                    )
                                   }
                                   type='button'
                                   className='text-gray-700 md:ml-4'
@@ -159,6 +163,7 @@ const Cart = ({ brands, categories }) => {
             <div class='py-4'>Carrinho Vazio</div>
           </div>
         )}
+        <pre>{JSON.stringify(cart, null, 2)}</pre>
       </Layout>
     </>
   )
