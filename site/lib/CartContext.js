@@ -83,6 +83,27 @@ export const CartProvider = ({ children }) => {
       return newCart
     })
   }
+
+  const changeQtd = (product, productVariation, increment) => {
+    setItems(current => {
+      const newCart = { ...current }
+      const newQtd = newCart[product].qtd[productVariation].qtd + increment
+      newCart[product] = {
+        ...newCart[product],
+
+        qtd: {
+          ...newCart[product].qtd,
+          [productVariation]: {
+            ...newCart[product].qtd[productVariation],
+            qtd: newQtd
+          }
+        }
+      }
+      localStorage.setItem('cart', JSON.stringify(newCart))
+      return newCart
+    })
+  }
+
   const size = Object.keys(items).length
   return (
     <CartContext.Provider
@@ -91,7 +112,8 @@ export const CartProvider = ({ children }) => {
         addToCart,
         size,
         removeFromCart,
-        removeVariationFromCart
+        removeVariationFromCart,
+        changeQtd
       }}
     >
       {children}

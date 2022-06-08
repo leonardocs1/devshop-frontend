@@ -2,7 +2,6 @@ import Seo from '../components/Seo'
 import Layout from '../components/Layout'
 import { fetcher } from '../lib/graphql'
 import { gql } from 'graphql-request'
-import Brands from '../components/Home/Brands'
 import { useCart } from '../lib/CartContext'
 
 const GET_ALL_BRANDS = gql`
@@ -71,35 +70,53 @@ const Cart = ({ brands, categories }) => {
                               </a>
                             </td>
                             <td>
-                              <a href='#'>
-                                <p className='mb-2 md:ml-4'>
-                                  {product.name}{' '}
-                                  {qtd[key].variation.optionName1}{' '}
-                                  {qtd[key].variation.optionName2}
-                                </p>
-                                <button
-                                  onClick={() =>
-                                    // cart.removeFromCart({ id: product.id })
-                                    cart.removeVariationFromCart(
-                                      product.id,
-                                      key
-                                    )
-                                  }
-                                  type='button'
-                                  className='text-gray-700 md:ml-4'
-                                >
-                                  <small>(Remove item)</small>
-                                </button>
-                              </a>
+                              <p className='md:ml-4'>
+                                <span className='font-bold'>
+                                  {product.name}
+                                </span>
+                                <br />
+                                {product.optionNames[0]}
+                                {': '}
+                                {qtd[key].variation.optionName1}
+                                {' / '}
+                                {product.optionNames[1]}
+                                {': '}
+                                {qtd[key].variation.optionName2}
+                              </p>
+                              <button
+                                onClick={() =>
+                                  // cart.removeFromCart({ id: product.id })
+                                  cart.removeVariationFromCart(product.id, key)
+                                }
+                                type='button'
+                                className='text-gray-700 md:ml-4 bg-red-100 px-2 py-1 rounded text-xs shadow'
+                              >
+                                Remover item
+                              </button>
                             </td>
                             <td className='justify-center md:justify-end md:flex mt-6'>
                               <div className='w-20 h-10'>
                                 <div className='relative flex flex-row w-full h-8'>
-                                  <input
-                                    type='number'
-                                    value='2'
-                                    className='w-full font-semibold text-center text-gray-700 bg-gray-200 outline-none focus:outline-none hover:text-black focus:text-black'
-                                  />
+                                  <button
+                                    disabled={qtd[key].qtd < 1}
+                                    onClick={() =>
+                                      cart.changeQtd(product.id, key, -1)
+                                    }
+                                    className='bg-gray-600 py-2 px-4 rounded rounded-r-none font-bold text-white'
+                                  >
+                                    -
+                                  </button>
+                                  <span className='w-full font-semibold text-center text-gray-700 bg-gray-200 outline-none focus:outline-none hover:text-black focus:text-black px-4'>
+                                    {qtd[key].qtd}
+                                  </span>
+                                  <button
+                                    onClick={() =>
+                                      cart.changeQtd(product.id, key, +1)
+                                    }
+                                    className='bg-gray-600 py-2 px-4 rounded rounded-l-none font-bold text-white'
+                                  >
+                                    +
+                                  </button>
                                 </div>
                               </div>
                             </td>
