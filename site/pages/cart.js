@@ -134,6 +134,14 @@ const Cart = ({ brands, categories }) => {
                         )
                       })
                     })}
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{cart.cartTotal}</td>
+                    </tr>
                   </tbody>
                 </table>
                 <hr className='pb-6 mt-6' />
@@ -180,6 +188,7 @@ const Cart = ({ brands, categories }) => {
             <div class='py-4'>Carrinho Vazio</div>
           </div>
         )}
+
         <pre>{JSON.stringify(cart, null, 2)}</pre>
       </Layout>
     </>

@@ -25,6 +25,21 @@ export const CartProvider = ({ children }) => {
       setItems(JSON.parse(loadedCart))
     }
   }, [])
+
+  const cartTotal = () => {
+    return Object.keys(items).reduce((prev, productId) => {
+      const productPrice = items[productId].product.price
+      const qtd = items[productId].qtd
+      const subtotal = Object.keys(qtd).reduce((prevSubtotal, variation) => {
+        const price = qtd[variation].variation.price
+          ? qtd[variation].variation.price
+          : productPrice
+        return prevSubtotal + qtd[variation].qtd * price
+      }, 0)
+      return prev + subtotal
+    }, 0)
+  }
+
   const addToCart = (product, selectedVariation) => {
     const variation = selectedVariation[0]
     const variationId = variation.optionName1 + variation.optionName2
@@ -113,7 +128,8 @@ export const CartProvider = ({ children }) => {
         size,
         removeFromCart,
         removeVariationFromCart,
-        changeQtd
+        changeQtd,
+        cartTotal: cartTotal()
       }}
     >
       {children}
