@@ -3,6 +3,7 @@ import Layout from '../components/Layout'
 import { fetcher } from '../lib/graphql'
 import { gql } from 'graphql-request'
 import { useCart } from '../lib/CartContext'
+import { priceFormat } from '../lib/priceUtils'
 
 const GET_ALL_BRANDS = gql`
   query {
@@ -36,7 +37,7 @@ const Cart = ({ brands, categories }) => {
           <div className='flex justify-center my-6'>
             <div className='flex flex-col w-full p-8 text-gray-800 bg-white shadow-lg pin-r pin-y md:w-4/5 lg:w-4/5'>
               <div className='flex-1'>
-                <table className='w-full text-sm lg:text-base' cellspacing='0'>
+                <table className='w-full text-sm lg:text-base' cellSpacing='0'>
                   <thead>
                     <tr className='h-12 uppercase'>
                       <th className='hidden md:table-cell'></th>
@@ -59,7 +60,7 @@ const Cart = ({ brands, categories }) => {
                       const qtd = cart.items[itemKey].qtd
                       return Object.keys(qtd).map(key => {
                         return (
-                          <tr>
+                          <tr key={key}>
                             <td className='hidden pb-4 md:table-cell'>
                               <a href='#'>
                                 <img
@@ -122,12 +123,14 @@ const Cart = ({ brands, categories }) => {
                             </td>
                             <td className='hidden text-right md:table-cell'>
                               <span className='text-sm lg:text-base font-medium'>
-                                10.00€
+                                {priceFormat(qtd[key].variation.price)}
                               </span>
                             </td>
                             <td className='text-right'>
                               <span className='text-sm lg:text-base font-medium'>
-                                20.00€
+                                {priceFormat(
+                                  qtd[key].variation.price * qtd[key].qtd
+                                )}
                               </span>
                             </td>
                           </tr>
@@ -139,8 +142,7 @@ const Cart = ({ brands, categories }) => {
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td></td>
-                      <td>{cart.cartTotal}</td>
+                      <td>Total: {priceFormat(cart.cartTotal)}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -149,8 +151,8 @@ const Cart = ({ brands, categories }) => {
                   <button className='flex justify-center w-full px-10 py-3 mt-6 font-medium text-white uppercase bg-gray-800 rounded-full shadow item-center hover:bg-gray-700 focus:shadow-outline focus:outline-none'>
                     <svg
                       aria-hidden='true'
-                      data-prefix='far'
-                      data-icon='credit-card'
+                      dataprefix='far'
+                      dataicon='credit-card'
                       className='w-8'
                       xmlns='http://www.w3.org/2000/svg'
                       viewBox='0 0 576 512'
@@ -168,7 +170,7 @@ const Cart = ({ brands, categories }) => {
           </div>
         )}
         {cart.size === 0 && (
-          <div class='rounded sm:w-full md:w-48 md:h-48 py-16 text-center opacity-50 md:border-solid md:border-2 md:border-gray-400'>
+          <div className='rounded sm:w-full md:w-48 md:h-48 py-16 text-center opacity-50 md:border-solid md:border-2 md:border-gray-400'>
             <svg
               className='mx-auto feather feather-image'
               xmlns='http://www.w3.org/2000/svg'
@@ -177,19 +179,17 @@ const Cart = ({ brands, categories }) => {
               viewBox='0 0 24 24'
               fill='none'
               stroke='currentColor'
-              stroke-width='2'
-              stroke-linecap='round'
-              stroke-linejoin='round'
+              strokeWidth='2'
+              strokeLinecap='round'
+              strokeLinejoin='round'
             >
               <rect x='3' y='3' width='18' height='18' rx='2' ry='2'></rect>
               <circle cx='8.5' cy='8.5' r='1.5'></circle>
               <polyline points='21 15 16 10 5 21'></polyline>
             </svg>
-            <div class='py-4'>Carrinho Vazio</div>
+            <div className='py-4'>Carrinho Vazio</div>
           </div>
         )}
-
-        <pre>{JSON.stringify(cart, null, 2)}</pre>
       </Layout>
     </>
   )

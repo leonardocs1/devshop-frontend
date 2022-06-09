@@ -84,7 +84,6 @@ export const CartProvider = ({ children }) => {
     })
   }
   const removeVariationFromCart = (product, productVariation) => {
-    console.log('remove variation', product, productVariation)
     setItems(current => {
       let newCart = { ...current }
       if (Object.keys(newCart[product].qtd).length === 1) {
